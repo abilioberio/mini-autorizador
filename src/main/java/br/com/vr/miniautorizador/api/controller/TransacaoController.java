@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.vr.miniautorizador.api.domain.model.Cartao;
 import br.com.vr.miniautorizador.api.domain.model.Transacao;
+import br.com.vr.miniautorizador.api.model.CartaoModel;
 import br.com.vr.miniautorizador.api.service.TransacaoService;
 
 @RestController
@@ -19,7 +19,7 @@ public class TransacaoController {
 	private TransacaoService transacaoService;
 	
 	@PostMapping
-	public ResponseEntity<Cartao> debito(@RequestBody Transacao transacao) {
+	public ResponseEntity<CartaoModel> debito(@RequestBody Transacao transacao) {
 		return transacaoService.debitar(transacao);
 	}
 

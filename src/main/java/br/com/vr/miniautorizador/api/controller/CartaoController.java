@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.vr.miniautorizador.api.domain.model.Cartao;
+import br.com.vr.miniautorizador.api.model.CartaoModel;
 import br.com.vr.miniautorizador.api.service.CartaoService;
 
 @RestController
@@ -18,14 +19,15 @@ public class CartaoController {
 
 	@Autowired
 	private CartaoService cartaoService;
-
+	
 	@PostMapping
-	public ResponseEntity<Cartao> novoCartao(@RequestBody Cartao cartao) {
+	public ResponseEntity<CartaoModel> novoCartao(@RequestBody Cartao cartao) {
 		return cartaoService.novoCartao(cartao);
 	}
 
 	@GetMapping("/{numeroCartao}")
-	public ResponseEntity<Cartao> obterSaldo(@PathVariable String numeroCartao) {
+	public ResponseEntity<CartaoModel> obterSaldo(@PathVariable String numeroCartao) {
 		return cartaoService.getSaldo(numeroCartao);
 	}
+		
 }
