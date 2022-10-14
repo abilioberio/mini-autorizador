@@ -28,11 +28,8 @@ public class CartaoService {
 
 		if (!optCartao.isPresent()) {
 
-			Cartao novoCartao = new Cartao();
-			novoCartao.setNumeroCartao(cartao.getNumeroCartao());
-			novoCartao.setSenha(cartao.getSenha());
+			Cartao novoCartao = new Cartao(cartao.getNumeroCartao(), cartao.getSenha(),new BigDecimal("500.00") );
 			novoCartao.setDtUpdate(new Date());
-			novoCartao.setSaldo(new BigDecimal("500.00"));
 			cartaoRepository.save(novoCartao);
 
 			return ResponseEntity.status(201).body(toCartaoModel(novoCartao));
@@ -57,13 +54,13 @@ public class CartaoService {
 
 	}
 	
-	private CartaoModel toCartaoModel(Cartao cartao) {
+	public CartaoModel toCartaoModel(Cartao cartao) {
 		CartaoModel cartaoModel = modelMapper.map(cartao, CartaoModel.class);
 		cartaoModel.setSaldo(null);
 		return cartaoModel;
 	}
 
-	private CartaoModel toCartaoModelSaldo(Cartao cartao) {
+	public CartaoModel toCartaoModelSaldo(Cartao cartao) {
 		CartaoModel cartaoSaldo = modelMapper.map(cartao, CartaoModel.class);
 		cartaoSaldo.setNumeroCartao(null);
 		cartaoSaldo.setSenha(null);

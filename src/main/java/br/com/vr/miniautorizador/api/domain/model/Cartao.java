@@ -24,6 +24,17 @@ public class Cartao implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	public Cartao() {
+		super();
+	}
+	
+	public Cartao(String numeroCartao, String senha, BigDecimal saldo) {
+		super();
+		this.numeroCartao = numeroCartao;
+		this.senha = senha;
+		this.saldo = saldo;
+	}
+
 	@EqualsAndHashCode.Include
 	@Id
 	private String numeroCartao;
