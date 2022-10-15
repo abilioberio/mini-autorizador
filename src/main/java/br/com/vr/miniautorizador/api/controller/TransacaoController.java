@@ -13,13 +13,18 @@ import br.com.vr.miniautorizador.api.service.TransacaoService;
 @RestController
 @RequestMapping(value = "/transacoes")
 public class TransacaoController {
-	
+
 	@Autowired
 	private TransacaoService transacaoService;
-	
+
 	@PostMapping
 	public ResponseEntity<String> debito(@RequestBody Transacao transacao) {
-		transacaoService.debitar(transacao);
-		return ResponseEntity.status(422).body("Ok");
+
+		int situacao = transacaoService.debitar(transacao);
+		
+		return situacao == 0 ? ResponseEntity.status(201).body("OK")
+				: situacao == 1 ? ResponseEntity.status(422).body("Cartão inexistente!")
+				: situacao == 2 ? ResponseEntity.status(422).body("Senha inválida!")
+				: ResponseEntity.status(422).body("Saldo insuficiente!");
 	}
 }
