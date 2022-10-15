@@ -4,14 +4,12 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import br.com.vr.miniautorizador.api.domain.exception.TransacaoException;
 import br.com.vr.miniautorizador.api.domain.model.Cartao;
 import br.com.vr.miniautorizador.api.domain.model.Transacao;
 import br.com.vr.miniautorizador.api.domain.repository.CartaoRepository;
-import br.com.vr.miniautorizador.api.model.CartaoModel;
 
 @Service
 public class TransacaoService {
@@ -22,15 +20,13 @@ public class TransacaoService {
 	@Autowired
 	private CartaoService cartaoService;
 	
-	public ResponseEntity<CartaoModel> debitar(Transacao transacao) {
+	public Cartao debitar(Transacao transacao) {
 
 		Optional<Cartao> optCartao = cartaoService.getCartao(transacao.getNumeroCartao());
 
 		if (optCartao.isPresent()) {
 
 			Cartao cartao = optCartao.get();
-
-			System.out.println(transacao.getSenhaCartao() + " " + cartao.getSenha());
 
 			if (!isAutenticado(transacao.getSenhaCartao(), cartao.getSenha())) {
 				throw new TransacaoException("Senha inválida.");
@@ -43,13 +39,9 @@ public class TransacaoService {
 			}
 
 			cartao.setSaldo(saldoAtualizado);
-			cartaoRepository.save(cartao);
-
-			CartaoModel cartaoModel = new CartaoModel();
-			cartaoModel.setStatus("Ok");
 			
-			return ResponseEntity.status(201).body(cartaoModel);
-
+			return cartaoRepository.save(cartao);
+ 
 		} else {
 
 			throw new TransacaoException("Cartão inexistente.");

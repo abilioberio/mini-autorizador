@@ -38,11 +38,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		}
 		
 		Problema problema = new Problema();
-		problema.setStatus(status.value());
 		problema.setDescricao("Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.");
 		problema.setCampos(campos);
 		
-		return handleExceptionInternal(ex, problema, headers, status, request);
+		return handleExceptionInternal(ex, problema.getDescricao(), headers, status, request);
 	}
 	
 	@ExceptionHandler(TransacaoException.class)
@@ -50,11 +49,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
 		
 		Problema problema = new Problema();
-		problema.setStatus(status.value());
 		problema.setDescricao(ex.getMessage());
 		
-		return handleExceptionInternal(ex, problema, new HttpHeaders(), status, request);
+		return handleExceptionInternal(ex, problema.getDescricao(), new HttpHeaders(), status, request);
 	}
-	
 	
 }

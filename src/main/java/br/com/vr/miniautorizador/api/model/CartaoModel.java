@@ -21,6 +21,12 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CartaoModel {
 
+	public CartaoModel(String numeroCartao, String senha) {
+		super();
+		this.numeroCartao = numeroCartao;
+		this.senha = senha;
+	}
+
 	private String numeroCartao;
 	
 	private String senha;

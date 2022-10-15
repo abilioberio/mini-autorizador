@@ -14,7 +14,6 @@ import lombok.Setter;
 @Setter
 public class Problema {
 
-	private Integer status;
 	private String descricao;
 	private List<Campo> campos;
 	

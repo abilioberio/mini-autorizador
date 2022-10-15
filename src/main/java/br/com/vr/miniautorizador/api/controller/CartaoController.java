@@ -1,5 +1,8 @@
 package br.com.vr.miniautorizador.api.controller;
 
+import java.math.BigDecimal;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,15 +22,32 @@ public class CartaoController {
 
 	@Autowired
 	private CartaoService cartaoService;
-	
+
+	@Autowired
+	private ModelMapper modelMapper;
+
 	@PostMapping
 	public ResponseEntity<CartaoModel> novoCartao(@RequestBody Cartao cartao) {
-		return cartaoService.novoCartao(cartao);
+
+		return cartaoService.novoCartao(cartao) != null ? ResponseEntity.status(201).body(toCartaoModel(cartao))
+				: ResponseEntity.status(422).body(toCartaoModel(cartao));
+
 	}
 
 	@GetMapping("/{numeroCartao}")
-	public ResponseEntity<CartaoModel> obterSaldo(@PathVariable String numeroCartao) {
-		return cartaoService.getSaldo(numeroCartao);
+	public ResponseEntity<BigDecimal> obterSaldo(@PathVariable String numeroCartao) {
+
+		BigDecimal saldo = cartaoService.getSaldo(numeroCartao);
+		return saldo == null ? ResponseEntity.status(404).build() : ResponseEntity.status(200).body(saldo);
 	}
-		
+
+	public CartaoModel toCartaoModel(Cartao cartao) {
+		CartaoModel cartaoModel = modelMapper.map(cartao, CartaoModel.class);
+		return cartaoModel;
+	}
+
+	public Cartao toModelCartao(CartaoModel cartaoModel) {
+		return modelMapper.map(cartaoModel, Cartao.class);
+
+	}
 }

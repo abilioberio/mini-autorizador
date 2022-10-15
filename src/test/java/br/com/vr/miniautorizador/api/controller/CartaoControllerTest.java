@@ -4,24 +4,27 @@ import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.standaloneSetup;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.ResponseEntity;
 
 import br.com.vr.miniautorizador.api.domain.model.Cartao;
-import br.com.vr.miniautorizador.api.model.CartaoModel;
 import br.com.vr.miniautorizador.api.service.CartaoService;
 import br.com.vr.miniautorizador.api.service.TransacaoService;
-import io.restassured.http.ContentType;
 
 @WebMvcTest
 public class CartaoControllerTest {
 
 	@Autowired
 	private CartaoController cartaoController;
+
+	@MockBean
+	private ModelMapper modelMapper;
 	
 	@MockBean
 	private CartaoService cartaoService;
@@ -38,33 +41,80 @@ public class CartaoControllerTest {
 	@Test
 	public void deveRetornarSucesso_QuandoGravarNovoCartao() {
 
-		Cartao cartao = new Cartao("6549873025634522","2222" , null);
-		
-		CartaoModel cartaoModel = this.cartaoService.toCartaoModel(cartao);
-		
-		when(this.cartaoService.novoCartao(cartao))
-			.thenReturn(ResponseEntity.status(201).body(cartaoModel));
+		when(this.cartaoService.novoCartao(new Cartao("6549873025634522","2222", null)))
+			.thenReturn(new Cartao("6549873025634522","2222", new BigDecimal("500.00")));
 		
 		given()
 			.contentType("application/json")
-			.body("{\"numeroCartao\": \"6549873025634520\",\"senha\": \"2222\"}")
+			.body("{\"numeroCartao\": \"6549873025634522\",\"senha\": \"2222\"}")
 		.when()
 			.post("/cartoes")
 		.then()
-			.statusCode(200)
+			.statusCode(201)
 			.log().all();
 	}
+	
+	@Test
+	public void deveRetornarSucesso_QuandoGravarNovoCartao(String cartao, String senha) {
+
+		when(this.cartaoService.novoCartao(new Cartao(cartao,senha, null)))
+			.thenReturn(new Cartao(cartao,senha, new BigDecimal("500.00")));
+		
+		given()
+			.contentType("application/json")
+			.body("{\"numeroCartao\": \"" + cartao + "\",\"senha\": \"" + senha + "\"}")
+		.when()
+			.post("/cartoes")
+		.then()
+			.statusCode(201)
+			.log().all();
+	}
+	
 
 	@Test
 	public void deveRetornarErro_QuandoNovoCartaoExiste() {
 
-		given()
-			.accept(ContentType.JSON)
-			.body("{\"numeroCartao\": \"6549873025634521\",\r\n" + "\"senha\": \"2222\"}")
-		.when()
-			.post("/cartoes")
-		.then()
-			.log().all();
+		when(this.cartaoService.novoCartao(new Cartao("6549873025634503","2222", null)))
+		.thenReturn(null);
+	
+	given()
+		.contentType("application/json")
+		.body("{\"numeroCartao\": \"6549873025634503\",\"senha\": \"2222\"}")
+	.when()
+		.post("/cartoes")
+	.then()
+		.statusCode(422)
+		.log().all();
 	}
+	
+	@Test
+	public void deveRetornarSaldo_QuandoCartaoExiste() {
+
+		when(this.cartaoService.getSaldo("6549873025634501"))
+		.thenReturn(new BigDecimal("399.00"));
+	
+	given()
+		.contentType("application/json")
+	.when()
+		.get("/cartoes/{cartao}", "6549873025634501")
+	.then()
+		.statusCode(200)
+		.log().all();
+	}
+	
+	@Test
+	public void deveRetornarErro_QuandoCartaoNaoExiste() {
+
+		when(this.cartaoService.getSaldo("6549873025634503"))
+		.thenReturn(null);
+	
+	given()
+		.contentType("application/json")
+	.when()
+		.get("/cartoes/{cartao}", "6549873025634503")
+	.then()
+		.statusCode(404)
+		.log().all();
+	}		
 	
 }
