@@ -39,7 +39,7 @@ public class CartaoControllerTest {
 	}
 
 	@Test
-	public void deveRetornarSucesso_QuandoGravarNovoCartao() {
+	public void deveRetornarStatus201_QuandoGravarNovoCartao() {
 
 		when(this.cartaoService.novoCartao(new Cartao("6549873025634522","2222", null)))
 			.thenReturn(new Cartao("6549873025634522","2222", new BigDecimal("500.00")));
@@ -55,7 +55,7 @@ public class CartaoControllerTest {
 	}
 	
 	@Test
-	public void deveRetornarSucesso_QuandoGravarNovoCartao(String cartao, String senha) {
+	public void deveRetornarStatus201_QuandoGravarNovoCartao(String cartao, String senha) {
 
 		when(this.cartaoService.novoCartao(new Cartao(cartao,senha, null)))
 			.thenReturn(new Cartao(cartao,senha, new BigDecimal("500.00")));
@@ -72,7 +72,7 @@ public class CartaoControllerTest {
 	
 
 	@Test
-	public void deveRetornarErro_QuandoNovoCartaoExiste() {
+	public void deveRetornarStatus422_QuandoNovoCartaoExiste() {
 
 		when(this.cartaoService.novoCartao(new Cartao("6549873025634503","2222", null)))
 		.thenReturn(null);
@@ -88,7 +88,7 @@ public class CartaoControllerTest {
 	}
 	
 	@Test
-	public void deveRetornarSaldo_QuandoCartaoExiste() {
+	public void deveRetornarStatus200_QuandoCartaoExiste() {
 
 		when(this.cartaoService.getSaldo("6549873025634501"))
 		.thenReturn(new BigDecimal("399.00"));
@@ -103,7 +103,7 @@ public class CartaoControllerTest {
 	}
 	
 	@Test
-	public void deveRetornarErro_QuandoCartaoNaoExiste() {
+	public void deveRetornarStatus404_QuandoCartaoNaoExiste() {
 
 		when(this.cartaoService.getSaldo("6549873025634503"))
 		.thenReturn(null);

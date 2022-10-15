@@ -26,16 +26,49 @@ public class TransacaoControllerTest2 {
 	private ObjectMapper objectMapper;
 
 	@Test
-	public void deveRetornarSucesso_QuandoHouverSaldoSuficiente() throws Exception {
+	public void deveRetornarStatus201_QuandoHouverSaldoSuficiente() throws Exception {
 		
-		TransacaoModel transacaoModel = new TransacaoModel("6549873025634501","2222", new BigDecimal("50.00"));
+		TransacaoModel transacaoModel = new TransacaoModel("6549873025634501","2222", new BigDecimal("10.00"));
 		
 		mockMvc.perform(post("/transacoes")
 			.contentType("application/json")
 			.content(objectMapper.writeValueAsString(transacaoModel)))
 			.andExpect(status().isCreated());
-
 	}
 
+	@Test
+	public void deveRetornarStatus422_QuandoNaoHouverSaldoSuficiente() throws Exception {
+		
+		TransacaoModel transacaoModel = new TransacaoModel("6549873025634501","2222", new BigDecimal("5000.00"));
+		
+		mockMvc.perform(post("/transacoes")
+			.contentType("application/json")
+			.content(objectMapper.writeValueAsString(transacaoModel)))
+			.andExpect(status().isUnprocessableEntity());
+	}
+
+	@Test
+	public void deveRetornarStatus422_QuandoSenhaInvalida() throws Exception {
+		
+		TransacaoModel transacaoModel = new TransacaoModel("6549873025634501","222", new BigDecimal("5.00"));
+		
+		mockMvc.perform(post("/transacoes")
+			.contentType("application/json")
+			.content(objectMapper.writeValueAsString(transacaoModel)))
+			.andExpect(status().isUnprocessableEntity());
+	}
+	
+	@Test
+	public void deveRetornarStatus422_QuandoCartaoInvalido() throws Exception {
+		
+		TransacaoModel transacaoModel = new TransacaoModel("1111111111111111","2222", new BigDecimal("5.00"));
+		
+		mockMvc.perform(post("/transacoes")
+			.contentType("application/json")
+			.content(objectMapper.writeValueAsString(transacaoModel)))
+			.andExpect(status().isUnprocessableEntity());
+	}
+
+	
 	
 }

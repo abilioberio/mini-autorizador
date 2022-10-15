@@ -18,13 +18,13 @@ public class TransacaoController {
 	private TransacaoService transacaoService;
 
 	@PostMapping
-	public ResponseEntity<String> debito(@RequestBody Transacao transacao) {
+	public ResponseEntity<String> debito(@RequestBody Transacao oper) {
 
-		int situacao = transacaoService.debitar(transacao);
+		this.transacaoService.debito(oper);
 		
-		return situacao == 0 ? ResponseEntity.status(201).body("OK")
-				: situacao == 1 ? ResponseEntity.status(422).body("Cartão inexistente!")
-				: situacao == 2 ? ResponseEntity.status(422).body("Senha inválida!")
-				: ResponseEntity.status(422).body("Saldo insuficiente!");
+		return oper.getCodMensagem() == 0 ? ResponseEntity.status(201).body(oper.getMensagem())
+				: oper.getCodMensagem() == 1 ? ResponseEntity.status(422).body(oper.getMensagem())
+				: oper.getCodMensagem() == 2 ? ResponseEntity.status(422).body(oper.getMensagem())
+				: ResponseEntity.status(422).body(oper.getMensagem());
 	}
 }

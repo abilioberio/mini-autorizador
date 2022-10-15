@@ -25,49 +25,59 @@ public class TransacaoControllerTest {
 
 	@MockBean
 	private ModelMapper modelMapper;
-	
-	@MockBean
-	private CartaoService cartaoService;
 
 	@MockBean
 	private TransacaoService transacaoService;
-	
+
+	@MockBean
+	private CartaoService cartaoService;
+
 	@BeforeEach
 	public void setup() {
 		standaloneSetup(this.transacaoController);
 	}
 
 	@Test
-	public void deveRetornarSucesso_QuandoHouverSaldoSuficiente() {
+	public void deveRetornarStatus201_QuandoHouverSaldoSuficiente() {
 
-		when(this.transacaoService.debitar(new Transacao("6549873025634501","2222", new BigDecimal("50.00"))))
-		.thenReturn(0);
-		
-		given()
-			.contentType("application/json")
-			.body("{\"numeroCartao\": \"6549873025634501\", \"senhaCartao\": \"2222\", \"valor\": \"50.00\"}")
-		.when()
-			.post("/transacoes")
-		.then()
-			.statusCode(201)
-			.log().all();
+		when(this.transacaoService.debito(new Transacao("6549873025634501", "2222", new BigDecimal("50.00"), null, 0)))
+				.thenReturn(new Transacao("6549873025634501", "2222", new BigDecimal("50.00"), "OK", 0));
+
+		given().contentType("application/json")
+				.body("{\"numeroCartao\": \"6549873025634501\", \"senhaCartao\": \"2222\", \"valor\": \"50.00\"}")
+				.when().post("/transacoes").then().statusCode(201).log().all();
 	}
-	
+
 	@Test
-	public void deveRetornarErro_QuandoNaoHouverSaldoSuficiente() {
+	public void deveRetornarStatus422_QuandoNaoHouverSaldoSuficiente() {
 
-		when(this.transacaoService.debitar(new Transacao("6549873025634501","2222", new BigDecimal("5000.00"))))
-		.thenReturn(3);
-		
-		given()
-			.contentType("application/json")
-			.body("{\"numeroCartao\": \"6549873025634501\", \"senhaCartao\": \"2222\", \"valor\": \"5000.00\"}")
-		.when()
-			.post("/transacoes")
-		.then()
-			.contentType("text/plain")
-			.statusCode(422)
-			.log().all();
+		when(this.transacaoService.debito(new Transacao("6549873025634501", "2222", new BigDecimal("5000.00"), null, 0)))
+				.thenReturn(new Transacao("6549873025634501", "2222", new BigDecimal("5000.00"), "OK", 0));
+
+		given().contentType("application/json")
+				.body("{\"numeroCartao\": \"6549873025634501\", \"senhaCartao\": \"2222\", \"valor\": \"5000.00\"}")
+				.when().post("/transacoes").then().statusCode(422).log().all();
 	}
-	
+
+	@Test
+	public void deveRetornarStatus422_QuandoSenhaInvalida() throws Exception {
+
+		when(this.transacaoService.debito(new Transacao("6549873025634501", "2222", new BigDecimal("50.00"), null, 0)))
+				.thenReturn(new Transacao("6549873025634501", "2222", new BigDecimal("50.00"), "OK", 0));
+
+		given().contentType("application/json")
+				.body("{\"numeroCartao\": \"6549873025634501\", \"senhaCartao\": \"22\", \"valor\": \"10.00\"}").when()
+				.post("/transacoes").then().statusCode(422).log().all();
+	}
+
+	@Test
+	public void deveRetornarStatus422_QuandoCartaoInvalido() throws Exception {
+
+		when(this.transacaoService.debito(new Transacao("6549873025634501", "2222", new BigDecimal("50.00"), null, 0)))
+				.thenReturn(new Transacao("6549873025634501", "2222", new BigDecimal("50.00"), "OK", 0));
+
+		given().contentType("application/json")
+				.body("{\"numeroCartao\": \"1111111111111111\", \"senhaCartao\": \"2222\", \"valor\": \"10.00\"}")
+				.when().post("/transacoes").then().statusCode(422).log().all();
+	}
 }

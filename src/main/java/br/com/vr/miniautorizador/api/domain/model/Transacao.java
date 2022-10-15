@@ -15,19 +15,24 @@ public class Transacao implements Serializable {
 	public Transacao() {
 		super();
 	}	
-	
-	public Transacao(String numeroCartao, String senhaCartao, BigDecimal valor) {
+
+	public Transacao(String numeroCartao, String senhaCartao, BigDecimal valor, String mensagem, int codMensagem) {
 		super();
 		this.numeroCartao = numeroCartao;
 		this.senhaCartao = senhaCartao;
 		this.valor = valor;
+		this.mensagem = mensagem;
+		this.codMensagem = codMensagem;
 	}
-
 
 	private String numeroCartao;
 	
 	private String senhaCartao;
 	
 	private BigDecimal valor; 
+	
+	private String mensagem;
+	
+	private int codMensagem;
 	
 }

@@ -19,46 +19,47 @@ public class TransacaoService {
 	@Autowired
 	private CartaoService cartaoService;
 	
-	public int debitar(Transacao transacao) {
+	public Transacao debito(Transacao transacao) {
 
 		Optional<Cartao> optCartao = cartaoService.getCartao(transacao.getNumeroCartao());
-		
-		System.out.println("passou");
 
 		if (optCartao.isPresent()) {
 
 			Cartao cartao = optCartao.get();
 
 			if (!isAutenticado(transacao.getSenhaCartao(), cartao.getSenha())) {
-				return 2;
-//				throw new TransacaoException("Senha inválida.");
+				transacao.setCodMensagem(2);
+				transacao.setMensagem("Senha inválida.");
+				return transacao;
 			}
 
 			BigDecimal saldoAtualizado = calcNovoSaldo(cartao.getSaldo(), transacao.getValor());
 
 			if (saldoAtualizado.compareTo(new BigDecimal("0.00")) == -1) {
-				return 3;
-//				throw new TransacaoException("Saldo insuficente.");
+				transacao.setCodMensagem(2);
+				transacao.setMensagem("Saldo insuficente.");
+				return transacao;
 			}
 
 			cartao.setSaldo(saldoAtualizado);
 			cartaoRepository.save(cartao);
 			
-			return 0;
+			transacao.setCodMensagem(0);
+			transacao.setMensagem("OK");
+			
+			return transacao;
  
 		} else {
-			return 1;
-//			throw new TransacaoException("Cartão inexistente.");
+			return transacao;
 		}
 
 	}
 
-	public Boolean isAutenticado(String senhaTransacao, String senhaCartao) {
-
+	private Boolean isAutenticado(String senhaTransacao, String senhaCartao) {
 		return senhaCartao.equals(senhaTransacao);
 	}
 
-	public BigDecimal calcNovoSaldo(BigDecimal saldoAtual, BigDecimal valor) {
+	private BigDecimal calcNovoSaldo(BigDecimal saldoAtual, BigDecimal valor) {
 		return saldoAtual.subtract(valor);
 	}
 }
