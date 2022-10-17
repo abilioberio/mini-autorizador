@@ -50,6 +50,10 @@ public class TransacaoService {
 			return transacao;
  
 		} else {
+			
+			transacao.setCodMensagem(3);
+			transacao.setMensagem("Cartão inexistente.");
+			
 			return transacao;
 		}
 

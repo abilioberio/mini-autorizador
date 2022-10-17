@@ -13,15 +13,15 @@ import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
 @Configuration
-@Profile("docker")
-public class DataConfiguration {
+@Profile("dev")
+public class DataDockerConfiguration {
 	@Bean
 	public DataSource dataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setUsername("root");
-		dataSource.setPassword("");
+		dataSource.setPassword("abiliobrio#");
 		dataSource.setUrl(
-				"jdbc:mysql://localhost:3306/miniautorizador?createDatabaseIfNotExist=true");
+				"jdbc:mysql://localhost:3306/vr-cartao?createDatabaseIfNotExist=true");
 		dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
 		return dataSource;
 	}

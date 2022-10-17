@@ -23,6 +23,9 @@ public class TransacaoControllerTest {
 	@Autowired
 	private TransacaoController transacaoController;
 
+	@Autowired
+	private CartaoController cartaoController;
+	
 	@MockBean
 	private ModelMapper modelMapper;
 
@@ -34,12 +37,12 @@ public class TransacaoControllerTest {
 
 	@BeforeEach
 	public void setup() {
-		standaloneSetup(this.transacaoController);
+		standaloneSetup(this.transacaoController,this.cartaoController);
 	}
 
 	@Test
 	public void deveRetornarStatus201_QuandoHouverSaldoSuficiente() {
-
+		
 		when(this.transacaoService.debito(new Transacao("6549873025634501", "2222", new BigDecimal("50.00"), null, 0)))
 				.thenReturn(new Transacao("6549873025634501", "2222", new BigDecimal("50.00"), "OK", 0));
 
@@ -61,13 +64,25 @@ public class TransacaoControllerTest {
 
 	@Test
 	public void deveRetornarStatus422_QuandoSenhaInvalida() throws Exception {
+		
+		System.out.println(this.cartaoService.getSaldo("6549873025634501"));
 
-		when(this.transacaoService.debito(new Transacao("6549873025634501", "2222", new BigDecimal("50.00"), null, 0)))
-				.thenReturn(new Transacao("6549873025634501", "2222", new BigDecimal("50.00"), "OK", 0));
+		when(this.cartaoService.getSaldo("6549873025634501")).thenReturn(new BigDecimal("1000.00"));
 
-		given().contentType("application/json")
-				.body("{\"numeroCartao\": \"6549873025634501\", \"senhaCartao\": \"22\", \"valor\": \"10.00\"}").when()
-				.post("/transacoes").then().statusCode(422).log().all();
+		System.out.println(this.transacaoService.debito(new Transacao("6549873025634501", "222", new BigDecimal("50.00"), "", 0)));
+		
+		when(this.transacaoService.debito(new Transacao("6549873025634501", "222", new BigDecimal("50.00"), "", 0)))
+				.thenReturn(new Transacao("6549873025634501", "222", new BigDecimal("50.00"), "OK", 2));
+
+		given()
+			.contentType("application/json")
+			.body("{\"numeroCartao\": \"6549873025634501\", \"senhaCartao\": \"22\", \"valor\": \"10.00\"}")
+			.when()
+			.post("/transacoes")
+			.then()
+			.log().all()
+//			.body(containsString("Senha inválida!"))
+			.statusCode(422);
 	}
 
 	@Test
