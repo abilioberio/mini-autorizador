@@ -11,7 +11,7 @@
 	<groupId>br.com.vr</groupId>
 	<artifactId>mini-autorizador-vr-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>mini-autorizador-vr-api</name>
 	<description>API mini autorizador VR</description>
 	<properties>
