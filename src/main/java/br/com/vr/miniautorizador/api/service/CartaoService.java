@@ -50,7 +50,7 @@ public class CartaoService {
 
 	}
 
-	public List<Cartao> getCartoes() {
+	public List<Cartao> listaCartoes() {
 
 		return cartaoRepository.findAll();
 

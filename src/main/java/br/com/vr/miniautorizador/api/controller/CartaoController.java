@@ -43,8 +43,8 @@ public class CartaoController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<Cartao>> getCartoes() {
-		List<Cartao> lista = cartaoService.getCartoes();
+	public ResponseEntity<List<Cartao>> listaCartoes() {
+		List<Cartao> lista = cartaoService.listaCartoes();
 		return ResponseEntity.status(200).body(lista);
 	}
 	
