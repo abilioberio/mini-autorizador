@@ -35,7 +35,7 @@ public class DataHerokuConfiguration {
 		props.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
 		props.put("hibernate.show_sql", false);
 		props.put("hibernate.format_sql", true);
-//		props.put("hibernate.hbm2ddl.auto", "update");
+		props.put("hibernate.hbm2ddl.auto", "update");
 
 		return props;
 	}

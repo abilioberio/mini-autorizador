@@ -8,9 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.orm.jpa.JpaVendorAdapter;
-import org.springframework.orm.jpa.vendor.Database;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
 @Configuration
 @Profile("docker")
@@ -27,21 +24,10 @@ public class DataConfiguration {
 	}
 
 	@Bean
-	public JpaVendorAdapter jpaVendorAdapter() {
-		HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
-		adapter.setDatabase(Database.MYSQL);
-		adapter.setShowSql(false);
-		adapter.setGenerateDdl(true);
-		adapter.setDatabasePlatform("org.hibernate.dialect.MySQL57Dialect");
-		adapter.setPrepareConnection(true);
-		return adapter;
-	}
-
-	@Bean
 	public Properties aditionalProperties() {
 		Properties props = new Properties();
 		props.put("hibernate.dialect", "org.hibernate.dialect.MySQL57Dialect");
-		props.put("hibernate.show_sql", true);
+		props.put("hibernate.show_sql", false);
 		props.put("hibernate.format_sql", true);
 		props.put("hibernate.hbm2ddl.auto", "update");
 //		props.put("hibernate.jdbc.time_zone", "spring.jpa.properties.hibernate.jdbc.time_zone");
