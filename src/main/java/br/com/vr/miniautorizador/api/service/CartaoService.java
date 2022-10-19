@@ -2,6 +2,7 @@ package br.com.vr.miniautorizador.api.service;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,5 +49,12 @@ public class CartaoService {
 		return cartaoRepository.findById(cartao);
 
 	}
+
+	public List<Cartao> getCartoes() {
+
+		return cartaoRepository.findAll();
+
+	}
+	
 	
 }

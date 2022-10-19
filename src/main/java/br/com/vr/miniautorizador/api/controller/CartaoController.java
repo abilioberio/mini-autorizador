@@ -1,6 +1,7 @@
 package br.com.vr.miniautorizador.api.controller;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,13 @@ public class CartaoController {
 		BigDecimal saldo = cartaoService.getSaldo(numeroCartao);
 		return saldo == null ? ResponseEntity.status(404).build() : ResponseEntity.status(200).body(saldo);
 	}
+	
+	@GetMapping
+	public ResponseEntity<List<Cartao>> getCartoes() {
+		List<Cartao> lista = cartaoService.getCartoes();
+		return ResponseEntity.status(200).body(lista);
+	}
+	
 
 	public CartaoModel toCartaoModel(Cartao cartao) {
 		CartaoModel cartaoModel = modelMapper.map(cartao, CartaoModel.class);
